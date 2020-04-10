@@ -1,0 +1,198 @@
+/**
+ * Feuille de style de l'application
+ * @Author Lionel Médini
+ * @License CC-BY-NC
+ */
+
+* {
+	margin: 0;
+	padding: 0;
+	color: #cbc7c1;
+	font-family: sans-serif;
+}
+
+/* Titre & menus */
+header {
+	z-index: 3;
+	position: fixed;
+	top: 0;
+	height: 12vh;
+	width: 100vw;
+	background: black;
+}
+
+h1 {
+	float: left;
+	font-size: 2em;
+	margin: 0;
+	padding: 1%;
+	text-transform: uppercase;
+}
+
+h2 {
+	font-size: 1.2em;
+	padding: 2%;
+}
+
+li {
+	list-style: none outside none;
+}
+
+aside {
+	visibility: hidden;
+	position: fixed;
+	top: 12vh;
+	left: 0;
+	padding-top: 3vh;
+	height: 80vh;
+	background: black;
+	opacity: 0.80;
+	z-index: 4;
+}
+
+input {
+	background-color: #3e4854;
+	border: none;
+	border-radius: 5px;
+	height: 1.4em;
+	color: #91b4cb;
+	padding-left: 5px;
+}
+
+br {
+	margin-bottom: 2%;
+}
+
+.menu {
+	opacity: 60%;
+	padding: 1em 10%;
+}
+
+.menu:hover {
+	background: #cbc7c1;
+	color: #202020;
+}
+
+/* Carte */
+#map {
+	position: fixed;
+	height: 80vh;
+	width: 100vw;
+	margin: 12vh 0 0;
+	z-index: 0;
+}
+
+/* Modales */
+.modal {
+	z-index: 5;
+	position: fixed;
+	visibility: hidden;
+	background: #202020;
+	margin-top: 20vh;
+	margin-left: 30%;
+	margin-right: 30%;
+	max-height: 70vh;
+	max-width: 40vw;
+	text-align: center;
+	padding: 3%;
+	overflow: auto;
+}
+
+.modal p.close {
+	top: 0;
+	padding: 0;
+	float: right;
+	font-size: 2em;
+	margin-top: -3%;
+}
+
+.modal p.content {
+	padding: 0;
+	padding-top: 2%;
+}
+
+/* Formulaire & licence */
+footer {
+	z-index: 2;
+	position: fixed;
+	bottom: 0;
+	height: 8vh;
+	width: 100vw;
+	background: black;
+	text-align: center;
+}
+
+#form {
+	float: left;
+	padding: 1%;
+}
+
+.licence {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	padding: 1%;
+}
+
+.licence a img {
+	height: 1.2em;
+}
+
+@media screen and (min-width: 601px) {
+	#menu {
+		visibility: visible;
+		position: fixed;
+		top: 0;
+		right: 5vw;
+		display: flex;
+		flex-direction: row;
+		padding-right: 3%;
+	}
+
+	#hMenu {
+		visibility: hidden;
+	}
+
+	#form {
+		visibility: visible;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+	}
+
+	#form li {
+		padding: 1%;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	header ul {
+		display: none;
+	}
+
+	#hMenu {
+		visibility: visible;
+		position: fixed;
+		top: 0;
+		right: 3vw;
+	}
+
+	#menu, #form {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+	}
+
+	#form li {
+		padding: 1em 10%;
+	}
+
+	h1 {
+		font-size: 1.5em;
+	}
+}

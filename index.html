@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="author" content="Lionel Médini">
+		<meta name="keywords" content="HTML,CSS,JavaScript,jQuery,Leaflet">
+		<meta name="description" content="Une simple application Web pour connaître le périmètre de sortie autorisé">
+        <title>Périmètre des sorties autorisé en confinement</title>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+		<link rel="stylesheet" href="css/style.css"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+		<header>
+			<h1>Sorties sportives</h1>
+			<div id="hMenu">
+				<div class="menu" onclick="toggleHMenu()">&nbsp;&#9776;&nbsp;</div>
+			</div>
+		</header>
+
+		<aside>
+			<h2>Menu</h2>
+			<ul id="menu">
+				<li class="menu" onclick="toggleMenu('principes')">&Agrave;&nbsp;propos</li>
+				<li class="menu" onclick="toggleMenu('donnees')">Données</li>
+			</ul>
+			<h2>Coordonnées</h2>
+			<ul id="form">
+				<li>Lattitude&nbsp;:&nbsp; <input type="text" id="lat" value="47.4"></li>
+				<li>Longitude&nbsp;:&nbsp; <input type="text" id="lon" value="1.7"></li>
+			</ul>
+		</aside>
+
+		<div class="modal" id="principes">
+			<p class="close" onclick="toggleMenu('principes')">&times;</p>
+			<p class="content">En cliquant sur la carte à l'adresse de votre domicile, vous obtenez un cercle de 1km de rayon qui vous aide à déterminer la zone dans laquelle vous avez le droit d'effectuer des promenades et des sorties sportives pendant la période de confinement.
+			<br>
+			Ce logiciel est fourni à titre grâcieux et  indicatif, et son auteur ne pourra être tenu pour responsable des conséquences de son utilisation.
+			<br>
+				Conception et réalisation : <strong><a href="https://liris.cnrs.fr/lionel.medini/">Lionel Médini</a></strong>.</p>
+		</div>
+
+		<div class="modal" id="donnees">
+			<p class="close" onclick="toggleMenu('donnees')">&times;</p>
+			<p class="content">Ceci est une application Web très simple, qui s'exécute uniquement sur votre terminal.
+			<br>
+			Elle <strong>n'envoie pas</strong> la localisation de votre domicile à un serveur.</p>
+		</div>
+
+		<section>
+			<div id="map"></div>
+		</section>
+
+		<footer>
+			<div class="licence">
+				<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" /></a>
+			</div>
+		</footer>
+		<script>
+			/***** Initialisation de la carte *****/
+			// Opérations minimales pour que la carte s'affiche le plus tôt possible
+			const mymap = L.map('map');
+
+			// Création d'un "tile layer" (permet l'affichage sur la carte)
+			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibTFpZjEzIiwiYSI6ImNqczBubmhyajFnMnY0YWx4c2FwMmRtbm4ifQ.O6W7HeTW3UvOVgjCiPrdsA', {
+				minZoom: 1,
+				maxZoom: 20,
+				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+						'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+						'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+				id: 'mapbox.streets'
+			}).addTo(mymap);
+
+			// Premier affichage
+			mymap.setView(L.latLng($('#lat').val(), $('#lon').val()), 6);
+		</script>
+		<script src="js/app.js" defer></script>
+  </body>
+</html>
