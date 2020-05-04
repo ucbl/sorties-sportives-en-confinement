@@ -4,16 +4,13 @@
  * @license CC-BY-NC
  */
 
-// Rayon de la zone de sortie
-const rayon = 1000;
-
 /***** Comportement de la carte *****/
 
 // Initialisation des layers
 let marker, circle;
 
 // Mise à jour de la map
-function updateMap(coords) {
+function updateMap(coords, rayon) {
 
 	// Affichage à la nouvelle position
 	mymap.panTo(coords);
@@ -33,7 +30,7 @@ function updateMap(coords) {
 
 // MàJ de la map si màj du formulaire
 function updateForm() {
-	updateMap(L.latLng($('#lat').val(), $('#lon').val()));
+	updateMap(L.latLng($('#lat').val(), $('#lon').val()), $('input[type=radio][name=dist][checked]').val() * 1000);
 }
 
 /***** Evénements liés à la carte *****/
@@ -42,12 +39,28 @@ function updateForm() {
 mymap.on('click', e => {
 	$('#lat').val(e.latlng.lat);
 	$('#lon').val(e.latlng.lng);
-	updateMap(e.latlng);
+	updateMap(e.latlng, $('input[type=radio][name=dist][checked]').val() * 1000);
 });
 
 // Abonnement aux événements de changement de coordonnées
 $('#lat').change(updateForm);
 $('#lon').change(updateForm);
+
+// Abonnement aux événements du bouton radio de changement des distances
+$('input[type=radio][name=dist]').change(function() {
+	if(circle) {
+		updateMap(L.latLng($('#lat').val(), $('#lon').val()), this.value * 1000);
+	}
+});
+
+// Abonnement aux événements de l'input nombre de km spécifiés par l'utilisateur
+$('#nkm').change(function() {
+	$('#_nkm').val($('#nkm').val());
+	if($('#_nkm').prop("checked")) {
+		updateMap(L.latLng($('#lat').val(), $('#lon').val()), this.value * 1000);
+	}
+	$('#_nkm').click();
+});
 
 /***** Comportement de l'interface *****/
 
