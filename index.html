@@ -2,7 +2,7 @@
 <html lang="fr">
     <head>
 		<meta charset="UTF-8">
-		<title>Sorties confinement COVID19</title>
+		<title>Sorties déconfinement COVID19</title>
 		<meta name="author" content="Lionel Médini">
 		<meta name="keywords" content="HTML,CSS,JavaScript,jQuery,Leaflet">
 		<meta name="description" content="Une simple application Web pour connaître le périmètre de sortie autorisé">
@@ -11,12 +11,45 @@
 		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
+		<link rel="manifest" href="manifest.webmanifest">
 		<link rel="stylesheet" href="css/style.css"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script>
+
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('./sw.js', { scope: '/lionel.medini/cercle/' })
+	  .then(function(registration) {
+		// suivre l'état de l'enregistrement du Service Worker : `installing`, `waiting`, `active`
+		console.log('[Main] ServiceWorker registration successful with scope: ', registration.scope);
+
+	let worker;
+		if (registration.installing) {
+			worker = registration.installing;
+			console.log('[Main] Worker is installing.');
+		} else if (registration.waiting) {
+			worker = registration.waiting;
+			console.log('[Main] Worker is waiting.');
+		} else if (registration.active) {
+			worker = registration.active;
+			console.log('[Main] Worker is active.');
+		}
+		if (worker) {
+			worker.addEventListener('statechange', function(e) {
+				console.log('[Main]', e.target);
+			});
+			worker.onmessage = function(e) { console.log('[SW]', e.message); };
+		}
+
+	})
+	  .catch(function(err){
+		console.log('ServiceWorker registration failed: ', err);
+	});
+}
+		</script>
     </head>
     <body>
 		<header>
-			<h1>Sorties et promenades</h1>
+			<h1>Cercle de déconfinement</h1>
 			<div id="hMenu">
 				<div class="menu" onclick="toggleHMenu()">&nbsp;&#9776;&nbsp;</div>
 			</div>
@@ -33,8 +66,7 @@
 				<li>Lattitude&nbsp;:&nbsp; <input type="text" id="lat" value="47.4"></li>
 				<li>Longitude&nbsp;:&nbsp; <input type="text" id="lon" value="1.7"></li>
 				<li>Distance&nbsp;:&nbsp; 
-					<input type="radio" id="_1km" name="dist" value="1" checked>&nbsp;<label for="_1km">1</label>&nbsp;
-					<input type="radio" id="_100km" name="dist" value="100">&nbsp;<label for="_100km">100</label>&nbsp;
+					<input type="radio" id="_100km" name="dist" value="100" checked>&nbsp;<label for="_100km">100</label>&nbsp;
 					<input type="radio" id="_nkm" name="dist" value="0">&nbsp;<label for="_nkm"><input type="number" size="3" id="nkm"></label>&nbsp;km
 				</li>
 			</ul>
@@ -43,9 +75,9 @@
 		<div class="modal" id="principes">
 			<p class="close" onclick="toggleMenu('principes')">&times;</p>
 			<p class="content">
-				En cliquant sur la carte à l'adresse de votre domicile, vous obtenez un cercle dont le rayon vous aide à déterminer la zone dans laquelle vous avez le droit d'effectuer des promenades et des sorties sportives pendant la période de confinement, ou après.
+				En cliquant sur la carte à l'adresse de votre domicile, vous obtenez un cercle dont le rayon vous aide à déterminer la zone dans laquelle vous avez le droit de vous déplacer sans autorisation après la période de confinement.
 			<br>
-				Ce logiciel est fourni à titre grâcieux et  indicatif, et son auteur ne pourra être tenu pour responsable des conséquences de son utilisation.
+				Ce logiciel est fourni à titre grâcieux et indicatif, et son auteur ne pourra être tenu pour responsable des conséquences de son utilisation.
 			<br>
 				Conception et réalisation : <strong><a href="https://liris.cnrs.fr/lionel.medini/">Lionel Médini</a></strong>.
 			<br>
