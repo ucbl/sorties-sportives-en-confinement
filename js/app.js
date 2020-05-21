@@ -7,30 +7,44 @@
 /***** Comportement de la carte *****/
 
 // Initialisation des layers
-let marker, circle;
+let circles = [];
 
-// Mise à jour de la map
-function updateMap(coords, rayon) {
-
-	// Affichage à la nouvelle position
+// Mise à jour de la map à la nouvelle position
+function updateMap(coords) {
 	mymap.panTo(coords);
+}
 
-	// Placement du marker au point cliqué
-	if(marker) {
-		marker.remove();
-	}
-	marker = L.marker(coords).addTo(mymap);
-
-	// Placement du cercle
-	if(circle) {
+// Affichage d'un cercle
+function drawCircle(coords, radius, id) {
+	const circle = L.circle(coords, {radius: radius, fill: false}).addTo(mymap);
+	// Si on clique sur le marker, on fait disparaître le cercle & le marker
+	const marker = L.marker(coords).addTo(mymap).on("click", () => {
 		circle.remove();
-	}
-	circle = L.circle(coords, {radius: rayon, fill: false}).addTo(mymap);
+		marker.remove();
+		// Suppression dans le tableau
+		circles.splice(id, 1);
+		// Synchronisation du tableau avec LocalStorage
+		updateLS();
+	});
+	return {circle : circle, marker : marker};
+}
+
+// Ajout d'un cercle
+function addCircle(coords, radius) {
+	updateMap(coords);
+	drawCircle(coords, radius, circles.length);
+	circles.push({coords: coords, radius: radius});
+	updateLS();
+}
+
+// MàJ du LocalStorage
+function updateLS() {
+	localStorage.circles = JSON.stringify(circles);
 }
 
 // MàJ de la map si màj du formulaire
 function updateForm() {
-	updateMap(L.latLng($('#lat').val(), $('#lon').val()), $('input[type=radio][name=dist][checked]').val() * 1000);
+updateMap(L.latLng($('#lat').val(), $('#lon').val()));
 }
 
 /***** Evénements liés à la carte *****/
@@ -39,7 +53,7 @@ function updateForm() {
 mymap.on('click', e => {
 	$('#lat').val(e.latlng.lat);
 	$('#lon').val(e.latlng.lng);
-	updateMap(e.latlng, $('input[type=radio][name=dist][checked]').val() * 1000);
+	addCircle(e.latlng, $('input[type=radio][name=dist][checked]').val() * 1000);
 });
 
 // Abonnement aux événements de changement de coordonnées
@@ -49,7 +63,7 @@ $('#lon').change(updateForm);
 // Abonnement aux événements du bouton radio de changement des distances
 $('input[type=radio][name=dist]').change(function() {
 	if(circle) {
-		updateMap(L.latLng($('#lat').val(), $('#lon').val()), this.value * 1000);
+		updateMap(L.latLng($('#lat').val(), $('#lon').val()));
 	}
 });
 
@@ -57,7 +71,7 @@ $('input[type=radio][name=dist]').change(function() {
 $('#nkm').change(function() {
 	$('#_nkm').val($('#nkm').val());
 	if($('#_nkm').prop("checked")) {
-		updateMap(L.latLng($('#lat').val(), $('#lon').val()), this.value * 1000);
+		updateMap(L.latLng($('#lat').val(), $('#lon').val()));
 	}
 	$('#_nkm').click();
 });
@@ -91,3 +105,12 @@ window.onresize = () => {
 		$("aside").css("visibility", "hidden");
 	}
 };
+
+// Affichage des cercles mémorisés
+if(localStorage.hasOwnProperty('circles')) {
+	console.log('Restoring circles from LocalStorage');
+	circles = JSON.parse(localStorage.getItem('circles'));
+	for(const circle of circles) {
+		drawCircle(circle.coords, circle.radius);
+	}
+}

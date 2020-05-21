@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v1';
+const CACHE_NAME = 'v2';
 const CACHE_URLs = [
   '/lionel.medini/cercle/',
   '/lionel.medini/cercle/index.html',
