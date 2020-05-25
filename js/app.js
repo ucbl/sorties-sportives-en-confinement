@@ -56,6 +56,14 @@ mymap.on('click', e => {
 	addCircle(e.latlng, $('input[type=radio][name=dist][checked]').val() * 1000);
 });
 
+mymap.on('zoomend', () => {
+	localStorage.zoom = mymap.getZoom();
+});
+
+mymap.on('move', () => {
+	localStorage.center = JSON.stringify({lat: mymap.getCenter().lat, lon: mymap.getCenter().lng});
+});
+
 // Abonnement aux événements de changement de coordonnées
 $('#lat').change(updateForm);
 $('#lon').change(updateForm);
@@ -113,4 +121,10 @@ if(localStorage.hasOwnProperty('circles')) {
 	for(const circle of circles) {
 		drawCircle(circle.coords, circle.radius);
 	}
+}
+
+// Affichage de la carte au dernier zoom
+if(localStorage.hasOwnProperty('zoom')) {
+	console.log('Restoring zoom from LocalStorage');
+	mymap.setZoom(localStorage.zoom);
 }

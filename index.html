@@ -117,6 +117,13 @@ if ('serviceWorker' in navigator) {
 				id: 'mapbox.streets'
 			}).addTo(mymap);
 
+			// Affichage de la carte à la dernière position
+			if(localStorage.hasOwnProperty('center')) {
+				console.log('Restoring position from LocalStorage');
+				$('#lat').val(JSON.parse(localStorage.center).lat);
+				$('#lon').val(JSON.parse(localStorage.center).lon);
+			}
+
 			// Premier affichage
 			mymap.setView(L.latLng($('#lat').val(), $('#lon').val()), 6);
 		</script>
